@@ -15,6 +15,7 @@ public:
     virtual std::string_view getSurname() = 0;
     virtual std::string_view getMidname() = 0;
     virtual std::string_view getFunction() = 0;
+    virtual std::string getFullName() = 0;
     virtual size_t getSalary() = 0;
 };
 
@@ -36,5 +37,10 @@ public:
     virtual std::string_view getSurname() override { return _surname; }
     virtual std::string_view getMidname() override { return _midname; }
     virtual std::string_view getFunction() override { return _function; }
+    virtual std::string getFullName() override { 
+            std::string fullname(_surname); 
+            fullname += " " + _name + " " + _midname;
+            return fullname;
+        }
     virtual size_t getSalary() override { return _salary; }
 };

@@ -15,6 +15,7 @@ ${src}/Department.cpp
 ${src}/DepXMLPugiConverter.cpp
 ${src}/ui/ui.cpp
 ${src}/ui/Button.cpp
+${src}/ui/Tree.cpp
 ${src}/ui/Toolbar.cpp
 ${src}/ui/Controller.cpp
 

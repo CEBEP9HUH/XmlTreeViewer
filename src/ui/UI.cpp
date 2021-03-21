@@ -1,5 +1,6 @@
 #include "ui/UI.hpp"
 #include "ui/Button.hpp"
+#include "ui/Tree.hpp"
 
 UI::UI(const int window_width, const int window_height) 
 :   window_size{window_width, window_height}
@@ -12,6 +13,11 @@ UI::UI(const int window_width, const int window_height)
 template<>
 UIElementBase* UI::make_element<UI::ElementType::Button, ICommand*>(std::string_view caption, IObserver* handler, ICommand* command) {
     return (new Button(caption, command))->attach_to(handler);
+}
+
+template<>
+UIElementBase* UI::make_element<UI::ElementType::Tree, ICommand*>(std::string_view caption, IObserver* handler, ICommand* command) {
+    return (new Tree(caption, command))->attach_to(handler);
 }
 
 void UI::addToolbarElement(std::string_view toolbar_name, UIElementBase* element) {
@@ -39,6 +45,7 @@ int UI::init() {
     ImGui::CreateContext();
     io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 20, NULL, io.Fonts->GetGlyphRangesCyrillic());
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL2_Init();
     clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
