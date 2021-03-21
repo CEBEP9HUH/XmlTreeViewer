@@ -10,7 +10,7 @@ int main() {
     auto buf = std::make_shared<DepXMLPugiConverter::_departments_container_t>();;
     DepXMLPugiConverter a(buf);
     a.setFilePath("../data/tsl.xml");
-    a.parse();
+    a.load();
     
     for(auto dep: *buf) {
         std::cout << dep->getName() << "\n";
@@ -37,6 +37,7 @@ int main() {
     cmd->execute();
     cmd2->execute();
     cmd3->execute();
+    a.save();
 
     for(auto dep: *buf) {
         std::cout << dep->getName() << "\n";

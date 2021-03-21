@@ -14,5 +14,6 @@ public:
     virtual ~DepXMLPugiConverter() = default;
     virtual void setFilePath(std::string_view path) override { _path = path; };
     virtual std::string_view getFilePath() override { return _path; };
-    virtual bool parse() override;
+    virtual bool load() override;
+    virtual bool save() override;
 };
