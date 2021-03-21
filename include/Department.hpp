@@ -14,6 +14,7 @@ public:
     virtual void setName(std::string_view name) = 0;
     virtual std::string_view getName() = 0;
     virtual size_t addPerson(const std::shared_ptr<IEmployee>& person) = 0;
+    virtual bool addPerson(const std::shared_ptr<IEmployee>& person, const size_t id) = 0;
     virtual void removePerson(size_t id) = 0;
     virtual std::shared_ptr<IEmployee> getPerson(const size_t id) = 0;
     virtual size_t getDepartmentSize() = 0;
@@ -50,6 +51,7 @@ public:
     virtual void setName(std::string_view name) override { _name = name; }
     virtual std::string_view getName() override { return _name; }
     virtual size_t addPerson(const std::shared_ptr<IEmployee>&) override;
+    virtual bool addPerson(const std::shared_ptr<IEmployee>& person, const size_t id) override;
     virtual void removePerson(size_t id) override;
     virtual std::shared_ptr<IEmployee> getPerson(const size_t id) override;
     virtual size_t getDepartmentSize() override { return _staff.size(); }

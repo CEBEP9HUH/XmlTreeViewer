@@ -7,6 +7,14 @@ size_t Department::addPerson(const std::shared_ptr<IEmployee>& person) {
     return _id_counter++;
 }
 
+bool Department::addPerson(const std::shared_ptr<IEmployee>& person, const size_t id) { 
+    if(_staff.count(id) > 0) {
+        return false;
+    }
+    _staff.emplace(id, person);
+    return true;
+}
+
 void Department::removePerson(const size_t id) { 
     _staff.erase(id);
 }
