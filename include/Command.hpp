@@ -3,8 +3,6 @@
 #include "Employee.hpp"
 #include "Department.hpp"
 
-#include <iostream>
-
 class ICommand {
 public:
     virtual ~ICommand() = default;
@@ -143,9 +141,9 @@ public:
     virtual ~SystemCommandBase() = default;
     SystemCommandBase(const command_t command): _command{command} {}
     command_t getCommandType() const { return _command; }
-    virtual bool isExecuted() override {}
-    virtual bool execute() override {}
-    virtual bool undo() override {}
+    virtual bool isExecuted() override { return true; }
+    virtual bool execute() override { return true; }
+    virtual bool undo() override { return true; }
 };
 
 class CommandRedo: public SystemCommandBase {
