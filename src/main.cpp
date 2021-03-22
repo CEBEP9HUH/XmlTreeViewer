@@ -6,6 +6,8 @@
 #include "Command.hpp"
 #include "ui/Controller.hpp"
 
+#include "TreeContainer.hpp"
+
 #include <iostream>
 
 int main() {

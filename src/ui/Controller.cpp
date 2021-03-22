@@ -32,11 +32,15 @@ Controller::Controller()
     auto tree = _ui->make_element<UI::ElementType::Tree>("derevo", 
                                                             nullptr, 
                                                             qwe);
-    auto buf = std::make_shared<DepXMLPugiConverter::_departments_container_t>();;
-    DepXMLPugiConverter a(buf);
+
+
+    
+    DepXMLPugiConverter a;
     a.setFilePath("../data/tsl.xml");
-    a.load();
-    reinterpret_cast<Tree*>(tree)->setData(buf);
+    Node* root = new Node();
+    root->setValue("Root");
+    a.load(root);
+    reinterpret_cast<Tree*>(tree)->setData(root);
     _ui->addToolbarElement("tree", tree);
 }
 

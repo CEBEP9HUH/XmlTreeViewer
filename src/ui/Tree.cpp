@@ -16,23 +16,36 @@ Tree::Tree(std::string_view caption, ICommand* command)
 
 }
 
-void Tree::setData(std::shared_ptr<std::list<std::shared_ptr<IDepartment> > > department) {
-    _department = department;
+void Tree::setData(Node* data) {
+    _data = data;
+    _cur_draw_pos = _data;
 }
 
+#include <iostream>
+
 void Tree::draw() {
-    for(auto& dep: *_department) {
-        if (ImGui::TreeNode(dep->getName().data()))
-        {
-            for(auto& [unused, emp]: *dep) {
-                
-                if (ImGui::TreeNode(emp->getFullName().data())) {
-                    ImGui::Text(emp->getFunction().data());
-                    ImGui::Text(std::to_string(emp->getSalary()).c_str());
-                    ImGui::TreePop();
+    if(_cur_draw_pos) {
+        if(_cur_draw_pos->isLeaf()) {
+            ImGui::Button("Edit");
+            ImGui::SameLine();
+            ImGui::Button("Delete");
+            ImGui::SameLine();
+            ImGui::Text(_cur_draw_pos->getValue().data());
+        } else {
+            ImGui::Button("Add");
+            ImGui::SameLine();
+            ImGui::Button("Delete");
+            ImGui::SameLine();
+            if (ImGui::TreeNode(_cur_draw_pos->getValue().data())) {
+                auto children = _cur_draw_pos->getChildList();
+                for(auto child: children) {
+                    _cur_draw_pos = child.get();
+                    draw();
                 }
+                ImGui::TreePop();
             }
-            ImGui::TreePop();
         }
     }
+    auto parent = _cur_draw_pos->getParentNode();
+    _cur_draw_pos = parent ? parent : _data;
 }
