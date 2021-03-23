@@ -11,7 +11,6 @@ find_package(SDL2 REQUIRED)
 
 add_executable(${PROJECT_NAME} 
 ${src}/main.cpp
-${src}/Department.cpp
 ${src}/DepXMLPugiConverter.cpp
 ${src}/ui/ui.cpp
 ${src}/ui/Button.cpp

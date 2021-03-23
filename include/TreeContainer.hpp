@@ -10,7 +10,7 @@
 class Node {
 protected:
     std::shared_ptr<Node> _parent = nullptr;
-    std::list<std::shared_ptr<Node> > _childs;
+    std::list<std::shared_ptr<Node> > _children;
     std::map<std::string, std::string> _attributes; //+
     std::string _value = ""; //+
     std::string _value_source = ""; //+
@@ -71,21 +71,25 @@ public:
     }
 
     void addChild(Node* child) {
-        _childs.emplace_back(child);
+        _children.emplace_back(child);
+    }
+
+    void removeChild(Node* child) {
+        [[maybe_unused]]auto it = std::remove_if(_children.begin(), _children.end(), [child](auto cur){ return cur.get() == child; });
     }
 
     std::list<std::shared_ptr<Node> > getChildList() const noexcept {
-        return _childs;
+        return _children;
     }
 
     bool isLeaf() const noexcept {
-        return _childs.empty();
+        return _children.empty();
     }
 
     Node* makeNewChild() {
-        _childs.emplace_back(new Node());
-        _childs.back()->setParentNode(this);
-        return _childs.back().get();
+        _children.emplace_back(new Node());
+        _children.back()->setParentNode(this);
+        return _children.back().get();
     }
 
 };

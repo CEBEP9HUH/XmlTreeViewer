@@ -1,6 +1,5 @@
 #pragma once 
 
-#include "Department.hpp"
 #include "XMLParser.hpp"
 
 class DepXMLPugiConverter: public IXMLParser {

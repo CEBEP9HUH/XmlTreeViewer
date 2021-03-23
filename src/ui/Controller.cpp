@@ -4,7 +4,6 @@
 
 
 #include "DepXMLPugiConverter.hpp"
-#include "Department.hpp"
 #include "ui/Tree.hpp"
 
 Controller::Controller()

@@ -1,7 +1,6 @@
 #define SDL_MAIN_HANDLED
 
 #include "DepXMLPugiConverter.hpp"
-#include "Department.hpp"
 #include "CommandHistory.hpp"
 #include "Command.hpp"
 #include "ui/Controller.hpp"
