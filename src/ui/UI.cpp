@@ -83,6 +83,7 @@ void UI::run() {
             bar.draw();
         }
 
+
         // Rendering
         ImGui::Render();
         glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);

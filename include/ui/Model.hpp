@@ -22,4 +22,8 @@ public:
                 break;
         }
     }
+
+    static void departmentCmdHandler(std::shared_ptr<ICommand> cmd) { 
+        cmd->execute();
+    }
 };

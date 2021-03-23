@@ -10,6 +10,6 @@ public:
     virtual ~DepXMLPugiConverter() = default;
     virtual void setFilePath(std::string_view path) override { _path = path; };
     virtual std::string_view getFilePath() override { return _path; };
-    virtual bool load(Node* root) override;
+    virtual bool load(std::shared_ptr<Node> root) override;
     virtual bool save(Node* root) override;
 };

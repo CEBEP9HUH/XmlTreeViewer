@@ -7,8 +7,6 @@
 
 #include "TreeContainer.hpp"
 
-#include <iostream>
-
 int main() {
     // auto buf = std::make_shared<DepXMLPugiConverter::_departments_container_t>();;
     // DepXMLPugiConverter a(buf);

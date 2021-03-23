@@ -10,6 +10,7 @@ Controller::Controller()
 :   _ui{new UI(1000, 700)}
 {
     _model.emplace("systemCmdHandler", new UIElementEventHandler<ICommand*>(Model::systemCommandHandler));
+    _model.emplace("departmentCmdHandler", new UIElementEventHandler<std::shared_ptr<ICommand>>(Model::departmentCmdHandler));
 
     ICommand* undo = new CommandUndo();
     _ui->addToolbarElement("tree", 
@@ -29,17 +30,17 @@ Controller::Controller()
 
     ICommand* qwe = nullptr;
     auto tree = _ui->make_element<UI::ElementType::Tree>("derevo", 
-                                                            nullptr, 
+                                                            _model["departmentCmdHandler"].get(), 
                                                             qwe);
 
 
     
     DepXMLPugiConverter a;
     a.setFilePath("../data/tsl.xml");
-    Node* root = new Node();
+    root.reset(new Node());
     root->setValue("Root");
     a.load(root);
-    reinterpret_cast<Tree*>(tree)->setData(root);
+    reinterpret_cast<Tree*>(tree)->setData(root.get());
     _ui->addToolbarElement("tree", tree);
 }
 

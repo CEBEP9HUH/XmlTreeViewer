@@ -37,7 +37,7 @@ constexpr const char XML_EMP_NODE[] = "employment";
 //     return true;
 // }
 
-bool DepXMLPugiConverter::load(Node* root) {
+bool DepXMLPugiConverter::load(std::shared_ptr<Node> root) {
 	pugi::xml_document doc;
     pugi::xml_parse_result result = doc.load_file(_path.c_str(), LOAD_FILE_DEFAULT_OPTIONS, pugi::encoding_utf8);
     if (!result || root == nullptr) {
@@ -45,21 +45,21 @@ bool DepXMLPugiConverter::load(Node* root) {
     }    
     for (pugi::xml_node dep: doc.child(XML_DEPS_CONTAINER).children(XML_DEP_NODE)) {
         if (auto attr = dep.attribute(XML_DEP_NAME_ATTR).as_string(); attr != "") {
-            auto dep_node = root->makeNewChild();
+            auto dep_node = Node::makeNewChild(root);
             dep_node->addAttribute(XML_DEP_NAME_ATTR, attr);
             dep_node->useAttributeAsValue(XML_DEP_NAME_ATTR);
             for (pugi::xml_node person: dep.child(XML_EMPS_CONTAINER).children(XML_EMP_NODE)) {
-                auto emp_node = dep_node->makeNewChild();
+                auto emp_node = Node::makeNewChild(dep_node);
                 std::string surname = person.child(XML_PERSON_SURNAME_FIELD).child_value();
                 std::string name = person.child(XML_PERSON_NAME_FIELD).child_value();
                 std::string midname = person.child(XML_PERSON_MIDNAME_FIELD).child_value();
                 std::string fullname(surname+" "+name+" "+midname);
                 emp_node->setValue(fullname);
-                emp_node->makeNewChild()->setValue(surname);
-                emp_node->makeNewChild()->setValue(name);
-                emp_node->makeNewChild()->setValue(midname);
-                emp_node->makeNewChild()->setValue(person.child_value(XML_PERSON_FUNCTION_FIELD));
-                emp_node->makeNewChild()->setValue(person.child_value(XML_PERSON_SALARY_FIELD));
+                Node::makeNewChild(emp_node)->setValue(surname);
+                Node::makeNewChild(emp_node)->setValue(name);
+                Node::makeNewChild(emp_node)->setValue(midname);
+                Node::makeNewChild(emp_node)->setValue(person.child_value(XML_PERSON_FUNCTION_FIELD));
+                Node::makeNewChild(emp_node)->setValue(person.child_value(XML_PERSON_SALARY_FIELD));
             }
         }
     }

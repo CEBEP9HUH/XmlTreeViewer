@@ -7,9 +7,9 @@
 
 #include <algorithm>
 
-class Node {
+class Node: public std::enable_shared_from_this<Node> {
 protected:
-    std::shared_ptr<Node> _parent = nullptr;
+    std::weak_ptr<Node> _parent;
     std::list<std::shared_ptr<Node> > _children;
     std::map<std::string, std::string> _attributes; //+
     std::string _value = ""; //+
@@ -62,20 +62,21 @@ public:
         _value_source = "";
     }
 
-    void setParentNode(Node* parent) {
-        _parent.reset(parent);
+    void setParentNode(std::shared_ptr<Node> parent) {
+        _parent = parent;
     }
 
-    Node* getParentNode() const noexcept {
-        return _parent.get();
+    std::shared_ptr<Node> getParentNode() const noexcept {
+        return _parent.lock();
     }
 
-    void addChild(Node* child) {
+    void addChild(std::shared_ptr<Node> child) {
         _children.emplace_back(child);
     }
 
+
     void removeChild(Node* child) {
-        [[maybe_unused]]auto it = std::remove_if(_children.begin(), _children.end(), [child](auto cur){ return cur.get() == child; });
+        _children.remove_if([child](auto val){ return val.get() == child;});
     }
 
     std::list<std::shared_ptr<Node> > getChildList() const noexcept {
@@ -86,10 +87,11 @@ public:
         return _children.empty();
     }
 
-    Node* makeNewChild() {
-        _children.emplace_back(new Node());
-        _children.back()->setParentNode(this);
-        return _children.back().get();
+    static std::shared_ptr<Node> makeNewChild(std::shared_ptr<Node> parent) {
+        auto child = std::make_shared<Node>();
+        parent->addChild(child);
+        child->setParentNode(parent);
+        return child;
     }
 
 };

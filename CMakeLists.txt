@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.2)
+# cmake -DCMAKE_TOOLCHAIN_FILE=C:\vcpkg\scripts\buildsystems\vcpkg.cmake ..
 
 project(XmlTreeViewver)
 set(src ${CMAKE_CURRENT_SOURCE_DIR}/src)

@@ -26,7 +26,7 @@ protected:
     std::shared_ptr<Node> _parent;
     std::shared_ptr<Node> _child;
 public:
-    DepartmentCommandAppend(Node* parent, Node* child)
+    DepartmentCommandAppend(std::shared_ptr<Node> parent, std::shared_ptr<Node> child)
     :   _parent{parent}
     ,   _child{child}
     {
@@ -34,33 +34,42 @@ public:
     }
     virtual ~DepartmentCommandAppend() = default;
     virtual bool execute() override {
-        _parent->addChild(_child.get());
+        _parent->addChild(_child);
+        _executed = true;
         return true; //FIXME should do we return anything?
     }
     virtual bool undo() override { 
         _parent->removeChild(_child.get());
+        _executed = false;
         return true; //FIXME should do we return anything?
     }
 };
 
 class DepartmentCommandRemove: public DepartmentCommandBase {
 protected:
-    std::shared_ptr<Node> _parent;
-    std::shared_ptr<Node> _child;
+    std::shared_ptr<Node> _node;
 public:
-    DepartmentCommandRemove(Node* parent, Node* child)
-    :   _parent{parent}
-    ,   _child{child}
+    DepartmentCommandRemove(std::shared_ptr<Node> node)
+    :   _node{node}
     {
-        
+
     }
-    virtual ~DepartmentCommandRemove() = default;
+    virtual ~DepartmentCommandRemove() {
+    }
     virtual bool execute() override {
-        _parent->removeChild(_child.get());
+        auto parent = _node->getParentNode();
+        if(parent) {
+            parent->removeChild(_node.get());
+        }
+        _executed = true;
         return true; //FIXME should do we return anything?
     }
     virtual bool undo() override {
-        _parent->addChild(_child.get());
+        auto parent = _node->getParentNode();
+        if(parent) {
+            parent->addChild(_node);
+        }
+        _executed = false;
         return true; //FIXME should do we return anything?
     }
 };
@@ -70,7 +79,7 @@ protected:
     std::shared_ptr<Node> _new_node;
     std::shared_ptr<Node> _target_node;
 public:
-    DepartmentCommandEdit(Node* target_node, Node* new_node)
+    DepartmentCommandEdit(std::shared_ptr<Node> target_node, std::shared_ptr<Node> new_node)
     :   _target_node{target_node}
     ,   _new_node{new_node}
     {
@@ -78,11 +87,21 @@ public:
     }
     virtual ~DepartmentCommandEdit() = default;
     virtual bool execute() override {
-        _target_node.swap(_new_node);
+        auto parent = _target_node->getParentNode();
+        if(parent) {
+            parent->addChild(_new_node);
+            parent->removeChild(_target_node.get());
+        }
+        _executed = true;
         return true; //FIXME should do we return anything?
     }
     virtual bool undo() override {
-        _target_node.swap(_new_node);
+        auto parent = _target_node->getParentNode();
+        if(parent) {
+            parent->addChild(_target_node);
+            parent->removeChild(_new_node.get());
+        }
+        _executed = false;
         return false;
     }
 };

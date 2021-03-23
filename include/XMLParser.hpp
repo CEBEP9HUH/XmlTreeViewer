@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <memory>
 
 #include "TreeContainer.hpp"
 
@@ -9,7 +10,7 @@ public:
     virtual ~IXMLParser() = default;
     virtual void setFilePath(std::string_view path) = 0;
     virtual std::string_view getFilePath() = 0;
-    virtual bool load(Node* root) = 0;
+    virtual bool load(std::shared_ptr<Node> root) = 0;
     virtual bool save(Node* root) = 0;
 };
 
