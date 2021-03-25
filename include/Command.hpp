@@ -5,8 +5,8 @@
 class ICommand {
 public:
     virtual ~ICommand() = default;
-    virtual bool execute() = 0;
-    virtual bool undo() = 0;
+    virtual void execute() = 0;
+    virtual void undo() = 0;
     virtual bool isExecuted() = 0;
 };
 
@@ -33,15 +33,13 @@ public:
         
     }
     virtual ~DepartmentCommandAppend() = default;
-    virtual bool execute() override {
+    virtual void execute() override {
         _parent->addChild(_child);
         _executed = true;
-        return true; //FIXME should do we return anything?
     }
-    virtual bool undo() override { 
-        _parent->removeChild(_child.get());
+    virtual void undo() override { 
+        _parent->removeChild(_child);
         _executed = false;
-        return true; //FIXME should do we return anything?
     }
 };
 
@@ -56,53 +54,45 @@ public:
     }
     virtual ~DepartmentCommandRemove() {
     }
-    virtual bool execute() override {
+    virtual void execute() override {
         auto parent = _node->getParentNode();
         if(parent) {
-            parent->removeChild(_node.get());
+            parent->removeChild(_node);
         }
         _executed = true;
-        return true; //FIXME should do we return anything?
     }
-    virtual bool undo() override {
+    virtual void undo() override {
         auto parent = _node->getParentNode();
         if(parent) {
             parent->addChild(_node);
         }
         _executed = false;
-        return true; //FIXME should do we return anything?
     }
 };
 
 class DepartmentCommandEdit: public DepartmentCommandBase {
 protected:
-    std::shared_ptr<Node> _new_node;
     std::shared_ptr<Node> _target_node;
+    std::string _value;
 public:
-    DepartmentCommandEdit(std::shared_ptr<Node> target_node, std::shared_ptr<Node> new_node)
+    DepartmentCommandEdit(std::shared_ptr<Node> target_node, std::string_view new_value)
     :   _target_node{target_node}
-    ,   _new_node{new_node}
+    ,   _value {new_value}
     {
         
     }
     virtual ~DepartmentCommandEdit() = default;
-    virtual bool execute() override {
-        auto parent = _target_node->getParentNode();
-        if(parent) {
-            parent->addChild(_new_node);
-            parent->removeChild(_target_node.get());
-        }
+    virtual void execute() override {
+        std::string tmp(_target_node->getValue());
+        _target_node->setValue(_value);
+        _value = tmp;
         _executed = true;
-        return true; //FIXME should do we return anything?
     }
-    virtual bool undo() override {
-        auto parent = _target_node->getParentNode();
-        if(parent) {
-            parent->addChild(_target_node);
-            parent->removeChild(_new_node.get());
-        }
+    virtual void undo() override {
+        std::string tmp(_target_node->getValue());
+        _target_node->setValue(_value);
+        _value = tmp;
         _executed = false;
-        return false;
     }
 };
 
@@ -119,9 +109,9 @@ public:
     virtual ~SystemCommandBase() = default;
     SystemCommandBase(const command_t command): _command{command} {}
     command_t getCommandType() const { return _command; }
+    virtual void execute() override { }
+    virtual void undo() override { }
     virtual bool isExecuted() override { return true; }
-    virtual bool execute() override { return true; }
-    virtual bool undo() override { return true; }
 };
 
 class CommandRedo: public SystemCommandBase {

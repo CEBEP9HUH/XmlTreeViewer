@@ -11,5 +11,5 @@ public:
     virtual void setFilePath(std::string_view path) override { _path = path; };
     virtual std::string_view getFilePath() override { return _path; };
     virtual bool load(std::shared_ptr<Node> root) override;
-    virtual bool save(Node* root) override;
+    virtual bool save(std::shared_ptr<Node> root) override;
 };

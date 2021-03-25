@@ -9,8 +9,8 @@
 class ICommandsHistory {
 public:
     virtual ~ICommandsHistory() = default;
-    virtual ICommand* pop() = 0;
-    virtual void push(ICommand*) = 0;
+    virtual std::shared_ptr<ICommand> pop() = 0;
+    virtual void push(std::shared_ptr<ICommand>) = 0;
     virtual void setSize(const size_t) = 0;
     virtual size_t getSize() = 0;
     virtual bool undo() = 0;
@@ -18,13 +18,13 @@ public:
 };
 
 class CommandsHistory: public ICommandsHistory {
-    std::list<ICommand*> _history;
+    std::list<std::shared_ptr<ICommand> > _history;
+    std::list<std::shared_ptr<ICommand> >::iterator _it;
     size_t _size = 0;
-    std::list<ICommand*>::iterator _it;
 public:
     CommandsHistory(): _it{_history.begin()} {}
     virtual ~CommandsHistory() = default;
-    virtual ICommand* pop() override { 
+    virtual std::shared_ptr<ICommand> pop() override { 
         if(_history.size() == 0) {
             return nullptr;
         }
@@ -35,7 +35,7 @@ public:
         }
         return res;
     }
-    virtual void push(ICommand* cmd) override { 
+    virtual void push(std::shared_ptr<ICommand> cmd) override { 
         if(_size > 0 && _history.size() == _size) 
             _history.pop_front(); 
         _history.push_back(cmd); 

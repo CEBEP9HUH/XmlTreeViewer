@@ -7,17 +7,21 @@ UI::UI(const int window_width, const int window_height)
 {
     bars.emplace(std::piecewise_construct,
                 std::forward_as_tuple("tree"), 
-                std::forward_as_tuple(0.f, 0.f, float(window_width)/2, float(window_height), "tree"));
+                std::forward_as_tuple(0.f, 0.f, float(window_width), float(window_height), "tree"));
 }
 
 template<>
-UIElementBase* UI::make_element<UI::ElementType::Button, ICommand*>(std::string_view caption, IObserver* handler, ICommand* command) {
+UIElementBase* 
+UI::make_element<UI::ElementType::Button, std::shared_ptr<ICommand>>
+(std::string_view caption, IObserver* handler, std::shared_ptr<ICommand> command) {
     return (new Button(caption, command))->attach_to(handler);
 }
 
 template<>
-UIElementBase* UI::make_element<UI::ElementType::Tree, ICommand*>(std::string_view caption, IObserver* handler, ICommand* command) {
-    return (new Tree(caption, command))->attach_to(handler);
+UIElementBase* 
+UI::make_element<UI::ElementType::Tree>
+(std::string_view caption, IObserver* handler) {
+    return (new Tree(caption))->attach_to(handler);
 }
 
 void UI::addToolbarElement(std::string_view toolbar_name, UIElementBase* element) {
@@ -45,7 +49,7 @@ int UI::init() {
     ImGui::CreateContext();
     io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 20, NULL, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 14, NULL, io.Fonts->GetGlyphRangesCyrillic());
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL2_Init();
     clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

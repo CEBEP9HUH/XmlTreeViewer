@@ -7,8 +7,8 @@ protected:
     std::shared_ptr<ICommand> _command;
 public:
     Button() = delete;
-    Button(const float x, const float y, const float w, const float h, std::string_view caption, ICommand* command);
-    Button(std::string_view caption, ICommand* command);
+    Button(const float x, const float y, const float w, const float h, std::string_view caption, std::shared_ptr<ICommand> command);
+    Button(std::string_view caption, std::shared_ptr<ICommand> command);
     virtual ~Button() = default;
 
     virtual void draw() override;
