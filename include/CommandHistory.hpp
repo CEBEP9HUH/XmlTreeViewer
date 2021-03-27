@@ -38,6 +38,9 @@ public:
     virtual void push(std::shared_ptr<ICommand> cmd) override { 
         if(_size > 0 && _history.size() == _size) 
             _history.pop_front(); 
+        if(_it != _history.end()) {
+            _history.erase(std::next(_it), _history.end());
+        }
         _history.push_back(cmd); 
         _it = std::prev(_history.end());
     }

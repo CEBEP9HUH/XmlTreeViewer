@@ -110,11 +110,21 @@ public:
         return child;
     }
 
+    virtual bool hasValue() const {
+        return !_value.empty();
+    }
+
+    enum class NodeType{
+        ROOT_NODE,
+        BASIC_NODE,
+        CONTAINER_NODE,
+        VIEW_NODE
+    };
 };
 
 class ViewNode: public Node {
 protected:
-    uint64_t _childs_to_value = 0; //TODO not a good decision
+    uint64_t _childs_to_value = 0; //XXX not a good decision
 public:
     ViewNode()
     :   Node{}
@@ -142,5 +152,9 @@ public:
         parent->addChild(child);
         child->setParentNode(parent);
         return child;
+    }
+
+    bool hasValue() const override {
+        return false;
     }
 };
