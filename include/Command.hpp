@@ -35,10 +35,12 @@ public:
     virtual ~DepartmentCommandAppend() = default;
     virtual void execute() override {
         _parent->addChild(_child);
+        _child->setParentNode(_parent);
         _executed = true;
     }
     virtual void undo() override { 
         _parent->removeChild(_child);
+        _child->setParentNode(nullptr);
         _executed = false;
     }
 };

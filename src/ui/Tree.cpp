@@ -24,7 +24,7 @@ void Tree::setData(std::shared_ptr<Node> data) {
 void Tree::draw() {
     static int id;
     if(_cur_draw_pos) {
-        auto add_button_name = "Add##" + std::to_string(id++); //FIXME buttons doesnt work sometimes
+        auto add_button_name = "Add##" + std::to_string(id++);
         if(ImGui::Button(add_button_name.c_str())) {
             ICommand* cmd = new DepartmentCommandAppend(_cur_draw_pos, std::make_shared<Node>());
             _command.reset(cmd);
