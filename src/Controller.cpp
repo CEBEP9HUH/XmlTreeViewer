@@ -7,33 +7,36 @@
 #include <thread>
 
 Controller::Controller()
-:   _ui{new UI(1000, 700)}
+:   _ui{new UI(500, 500)}
 ,   _model{new Model()}
 {
-    std::shared_ptr<ICommand> undo(new CommandUndo());
+    std::shared_ptr<ICommand> undo(new CommandUndo(_model->getCommandHistory()));
     _ui->addToolbarElement("tree", 
         _ui->make_element<UI::ElementType::Button>("Undo", 
-            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::systemCommandHandler, _model.get(), std::placeholders::_1)), 
+            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false)), 
             undo));
 
-    std::shared_ptr<ICommand> redo(new CommandRedo());
+    std::shared_ptr<ICommand> redo(new CommandRedo(_model->getCommandHistory()));
     _ui->addToolbarElement("tree", 
                 _ui->make_element<UI::ElementType::Button>("Redo", 
-                new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::systemCommandHandler, _model.get(), std::placeholders::_1)), 
+                new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false)), 
                 redo));
 
     auto tree = _ui->make_element<UI::ElementType::Tree>("tree_view", 
-            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::departmentCmdHandler, _model.get(), std::placeholders::_1)));
+            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, true)));
 
     reinterpret_cast<Tree*>(tree)->setData(_model->getDepartment());
-    _ui->addToolbarElement("tree", tree);
+    tree->setSize(100,500);
+    _ui->addToolbarElement("tree", tree, true);
 }
 
 void Controller::run() {
-    std::thread th(&UI::run, _ui.get());
-    th.join();
+    auto ui_thread = std::thread(&UI::run, _ui.get());
+    auto model_thread = std::thread(&Model::run, _model.get());
+    ui_thread.join();
+    _model->exit();
+    model_thread.join();
 }
-
 
 
 Controller::~Controller()

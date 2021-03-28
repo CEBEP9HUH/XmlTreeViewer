@@ -3,10 +3,10 @@
 
 constexpr const size_t LOAD_FILE_DEFAULT_OPTIONS = 116;
 const DepXMLPugiConverter::structure_t
-DepXMLPugiConverter::_department_xml_structure = {{{"departments", Node::NodeType::ROOT_NODE},
-                                                {"department", Node::NodeType::BASIC_NODE}, 
-                                                {"employments", Node::NodeType::CONTAINER_NODE}, 
-                                                {"employment", Node::NodeType::VIEW_NODE}}};
+DepXMLPugiConverter::_department_xml_structure = {{{"departments", DepXMLPugiConverter::NodeType::ROOT_NODE},
+                                                {"department", DepXMLPugiConverter::NodeType::BASIC_NODE}, 
+                                                {"employments", DepXMLPugiConverter::NodeType::CONTAINER_NODE}, 
+                                                {"employment", DepXMLPugiConverter::NodeType::VIEW_NODE}}};
 
 void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node& pnode, size_t depth) {
     for (pugi::xml_node& n: pnode.children()) {
@@ -16,11 +16,11 @@ void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node& p
         std::shared_ptr<Node> cur;
         if(depth < _department_xml_structure_depth) {
             switch(_department_xml_structure[depth].second) {
-                case Node::NodeType::CONTAINER_NODE: {
+                case DepXMLPugiConverter::NodeType::CONTAINER_NODE: {
                     _parse(tnode, n, depth + 1);
                     continue;
                 } break;
-                case Node::NodeType::VIEW_NODE : {
+                case DepXMLPugiConverter::NodeType::VIEW_NODE : {
                     cur = ViewNode::makeNewChild(tnode, 3);
                 } break;
                 default: {
@@ -43,9 +43,9 @@ void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node& p
     }
 }
 
-bool DepXMLPugiConverter::load(std::shared_ptr<Node>& root) {
+bool DepXMLPugiConverter::load(std::shared_ptr<Node>& root, std::string_view file_name) {
 	pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_file(_path.c_str(), LOAD_FILE_DEFAULT_OPTIONS, pugi::encoding_utf8);
+    pugi::xml_parse_result result = doc.load_file(file_name.data(), LOAD_FILE_DEFAULT_OPTIONS, pugi::encoding_utf8);
     if (!result || root == nullptr) {
         return false;
     }    
@@ -56,7 +56,7 @@ bool DepXMLPugiConverter::load(std::shared_ptr<Node>& root) {
 
 void DepXMLPugiConverter::_convert(std::shared_ptr<Node>& tnode, pugi::xml_node pnode, size_t depth) {
     if(depth < _department_xml_structure_depth) {
-        if(_department_xml_structure[depth].second == Node::NodeType::CONTAINER_NODE) {
+        if(_department_xml_structure[depth].second == DepXMLPugiConverter::NodeType::CONTAINER_NODE) {
             pnode = pnode.append_child(_department_xml_structure[depth].first.c_str());
         }
     }
@@ -74,12 +74,12 @@ void DepXMLPugiConverter::_convert(std::shared_ptr<Node>& tnode, pugi::xml_node 
     }
 }
 
-bool DepXMLPugiConverter::save(std::shared_ptr<Node>& root) {
+bool DepXMLPugiConverter::save(std::shared_ptr<Node>& root, std::string_view file_name) {
     if (root == nullptr) {
         return false;
     }   
 	pugi::xml_document doc; 
     _convert(root, doc.append_child(root->getTag().data()), 1);
-    doc.save_file("qwe.xml", " ", 1U, pugi::encoding_utf8);
+    doc.save_file(file_name.data(), "   ", 1U, pugi::encoding_utf8);
     return true;
 }

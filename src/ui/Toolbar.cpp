@@ -15,8 +15,8 @@ Toolbar::Toolbar()
 
 }
 
-void Toolbar::append(UIElementBase* element) {
-    _elements.emplace_back(element);
+void Toolbar::append(UIElementBase* element, bool new_line = true) {
+    _elements.emplace_back(element, new_line);
 }
 
 void Toolbar::draw() {
@@ -29,8 +29,10 @@ void Toolbar::draw() {
     ImGui::Begin(_caption.c_str(), &_is_active, flags);
     ImGui::SetWindowSize({_shapeRect.width, _shapeRect.height});
     ImGui::SetWindowPos({_shapeRect.posX, _shapeRect.posY});
-    for(auto& el: _elements) {
-        ImGui::SameLine();
+    for(auto& [el, new_line]: _elements) {
+        if(!new_line) {
+            ImGui::SameLine();
+        }
         el->draw();
     }
     ImGui::End();

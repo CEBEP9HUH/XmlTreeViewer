@@ -55,7 +55,7 @@ public:
     void run();
     void deinit();
 
-    void addToolbarElement(std::string_view toolbar_name, UIElementBase* element);
+    void addToolbarElement(std::string_view toolbar_name, UIElementBase* element, bool new_line = false);
 
     template<ElementType, typename...Args>
     UIElementBase* make_element(std::string_view caption, IObserver* handler, Args...args);

@@ -24,9 +24,9 @@ UI::make_element<UI::ElementType::Tree>
     return (new Tree(caption))->attach_to(handler);
 }
 
-void UI::addToolbarElement(std::string_view toolbar_name, UIElementBase* element) {
+void UI::addToolbarElement(std::string_view toolbar_name, UIElementBase* element, bool new_line) {
     if(bars.count(toolbar_name.data())) {
-        bars[toolbar_name.data()].append(element);
+        bars[toolbar_name.data()].append(element, new_line);
     }
 }
 
@@ -49,7 +49,7 @@ int UI::init() {
     ImGui::CreateContext();
     io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
-    io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 14, NULL, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontFromFileTTF("..\\assets\\Arial.ttf", 14, NULL, io.Fonts->GetGlyphRangesCyrillic());
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL2_Init();
     clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);

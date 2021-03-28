@@ -78,20 +78,24 @@ public:
         _value_source = "";
     }
 
-    void setParentNode(std::shared_ptr<Node> parent) {
+    void setParentNode(std::shared_ptr<Node>& parent) {
         _parent = parent;
+    }
+
+    void resetParentNode() {
+        _parent.reset();
     }
 
     std::shared_ptr<Node> getParentNode() const noexcept {
         return _parent.lock();
     }
 
-    void addChild(std::shared_ptr<Node> child) {
+    void addChild(std::shared_ptr<Node>& child) {
         _children.emplace_back(child);
     }
 
 
-    void removeChild(std::shared_ptr<Node> child) {
+    void removeChild(std::shared_ptr<Node>& child) {
         _children.remove_if([child](auto val){ return val.get() == child.get();});
     }
 
@@ -103,7 +107,7 @@ public:
         return _children.empty();
     }
 
-    static std::shared_ptr<Node> makeNewChild(std::shared_ptr<Node> parent) {
+    static std::shared_ptr<Node> makeNewChild(std::shared_ptr<Node>& parent) {
         auto child = std::make_shared<Node>();
         parent->addChild(child);
         child->setParentNode(parent);
@@ -113,18 +117,11 @@ public:
     virtual bool hasValue() const {
         return !_value.empty();
     }
-
-    enum class NodeType{
-        ROOT_NODE,
-        BASIC_NODE,
-        CONTAINER_NODE,
-        VIEW_NODE
-    };
 };
 
 class ViewNode: public Node {
 protected:
-    uint64_t _childs_to_value = 0; //XXX not a good decision
+    uint64_t _childs_to_value = 0;
 public:
     ViewNode()
     :   Node{}
@@ -145,7 +142,7 @@ public:
         return _value;
     }
 
-    static std::shared_ptr<Node> makeNewChild(std::shared_ptr<Node> parent, const uint64_t first_n_use_as_label = 0) {
+    static std::shared_ptr<Node> makeNewChild(std::shared_ptr<Node>& parent, const uint64_t first_n_use_as_label = 0) {
         auto tmp = std::make_shared<ViewNode>();
         tmp->_childs_to_value = first_n_use_as_label;
         std::shared_ptr<Node> child = tmp;

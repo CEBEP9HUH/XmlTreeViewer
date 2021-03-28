@@ -26,7 +26,7 @@ protected:
     std::shared_ptr<Node> _parent;
     std::shared_ptr<Node> _child;
 public:
-    DepartmentCommandAppend(std::shared_ptr<Node> parent, std::shared_ptr<Node> child)
+    DepartmentCommandAppend(std::shared_ptr<Node>& parent, std::shared_ptr<Node>& child)
     :   _parent{parent}
     ,   _child{child}
     {
@@ -40,7 +40,7 @@ public:
     }
     virtual void undo() override { 
         _parent->removeChild(_child);
-        _child->setParentNode(nullptr);
+        _child->resetParentNode();
         _executed = false;
     }
 };
@@ -49,7 +49,7 @@ class DepartmentCommandRemove: public DepartmentCommandBase {
 protected:
     std::shared_ptr<Node> _node;
 public:
-    DepartmentCommandRemove(std::shared_ptr<Node> node)
+    DepartmentCommandRemove(std::shared_ptr<Node>& node)
     :   _node{node}
     {
 
@@ -77,7 +77,7 @@ protected:
     std::shared_ptr<Node> _target_node;
     std::string _value;
 public:
-    DepartmentCommandEdit(std::shared_ptr<Node> target_node, std::string_view new_value)
+    DepartmentCommandEdit(std::shared_ptr<Node>& target_node, std::string_view new_value)
     :   _target_node{target_node}
     ,   _value {new_value}
     {
@@ -99,31 +99,49 @@ public:
 };
 
 
+#include "CommandHistory.hpp"
+
 class SystemCommandBase: public ICommand {
 public:
-    enum class command_t {
-        Redo,
-        Undo
-    };
-protected:
-    const command_t _command;
-public:
     virtual ~SystemCommandBase() = default;
-    SystemCommandBase(const command_t command): _command{command} {}
-    command_t getCommandType() const { return _command; }
-    virtual void execute() override { }
-    virtual void undo() override { }
+    SystemCommandBase() = default;
     virtual bool isExecuted() override { return true; }
 };
 
 class CommandRedo: public SystemCommandBase {
+protected:
+    std::shared_ptr<ICommandsHistory> _history;
 public:
     virtual ~CommandRedo() = default;
-    CommandRedo(): SystemCommandBase{command_t::Redo} {}
+    CommandRedo(std::shared_ptr<ICommandsHistory>& command_history)
+    :   SystemCommandBase{}
+    ,   _history{command_history}
+    {
+
+    }
+    virtual void execute() override {
+        _history->redo();
+    }
+    virtual void undo() override {
+        _history->undo();
+    }
 };
 
 class CommandUndo: public SystemCommandBase {
+protected:
+    std::shared_ptr<ICommandsHistory> _history;
 public:
     virtual ~CommandUndo() = default;
-    CommandUndo(): SystemCommandBase{command_t::Undo} {}
+    CommandUndo(std::shared_ptr<ICommandsHistory>& command_history)
+    :   SystemCommandBase{}
+    ,   _history{command_history}
+    {
+
+    }
+    virtual void execute() override {
+        _history->undo();
+    }
+    virtual void undo() override {
+        _history->redo();
+    }
 };

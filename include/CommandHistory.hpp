@@ -4,13 +4,12 @@
 
 #include <memory>
 #include <list>
-#include <iterator>
 
 class ICommandsHistory {
 public:
     virtual ~ICommandsHistory() = default;
     virtual std::shared_ptr<ICommand> pop() = 0;
-    virtual void push(std::shared_ptr<ICommand>) = 0;
+    virtual void push(std::shared_ptr<ICommand>&) = 0;
     virtual void setSize(const size_t) = 0;
     virtual size_t getSize() = 0;
     virtual bool undo() = 0;
@@ -35,7 +34,7 @@ public:
         }
         return res;
     }
-    virtual void push(std::shared_ptr<ICommand> cmd) override { 
+    virtual void push(std::shared_ptr<ICommand>& cmd) override { 
         if(_size > 0 && _history.size() == _size) 
             _history.pop_front(); 
         if(_it != _history.end()) {
@@ -47,7 +46,7 @@ public:
     virtual void setSize(const size_t size) override { _size = size; }
     virtual size_t getSize() override { return _size; }
     virtual bool undo() override {
-        if(*_it && (*_it)->isExecuted()) {
+        if(!_history.empty() && (*_it)->isExecuted()) {
             (*_it)->undo();
             if(_it != _history.begin()) {
                 --_it;
@@ -57,12 +56,12 @@ public:
         return false;
     }
     virtual bool redo() override {
-        if(*_it && !(*_it)->isExecuted()) {
-            (*_it)->execute();
-            if(std::next(_it) != _history.end()) {
-                ++_it;
+        if(std::next(_it) != _history.end()) {
+            ++_it;
+            if(!_history.empty() && !(*_it)->isExecuted()) {
+                (*_it)->execute();
+                return true;
             }
-            return true;
         }
         return false;
     }
