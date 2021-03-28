@@ -3,6 +3,7 @@ observer-publisher pattern
 */
 #pragma once
 #include <any>
+#include <memory>
 
 class IObserver {
 public:
@@ -12,8 +13,8 @@ public:
 
 class ISubject {
 protected:
-    virtual void attach(IObserver* observer) = 0;
-    virtual void detach(IObserver* observer) = 0;
+    virtual void attach(std::shared_ptr<IObserver> observer) = 0;
+    virtual void detach(std::shared_ptr<IObserver> observer) = 0;
 
 public:
     virtual ~ISubject() = default;

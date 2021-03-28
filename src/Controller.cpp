@@ -12,24 +12,24 @@ Controller::Controller()
 ,   _model{new Model()}
 {
     
-    auto cmd_handler_no_history = new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false));
     std::shared_ptr<ICommand> undo(new CommandUndo(_model->getCommandHistory()));
+    auto no_history_handler = std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false);
+    std::shared_ptr<IObserver> no_history_observer = std::make_shared<UIElementEventHandler<std::shared_ptr<ICommand>>>(no_history_handler);
     _ui->addToolbarElement("tree", 
         _ui->make_element<UI::ElementType::Button>("Undo", 
-            cmd_handler_no_history, 
+            no_history_observer, 
             undo));
 
     std::shared_ptr<ICommand> redo(new CommandRedo(_model->getCommandHistory()));
     _ui->addToolbarElement("tree", 
                 _ui->make_element<UI::ElementType::Button>("Redo", 
-                cmd_handler_no_history, 
+                no_history_observer, 
                 redo));
 
-    auto tree = _ui->make_element<UI::ElementType::Tree>("tree_view", 
-            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, true)));
-
+    auto with_history_handler = std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, true);
+    std::shared_ptr<IObserver> with_history_observer = std::make_shared<UIElementEventHandler<std::shared_ptr<ICommand>>>(with_history_handler);
+    auto tree = _ui->make_element<UI::ElementType::Tree>("tree_view", with_history_observer);
     reinterpret_cast<Tree*>(tree)->setData(_model->getDepartment());
-    // tree->setSize(100,500);
     _ui->addToolbarElement("tree", tree, true);
 }
 

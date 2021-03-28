@@ -1,6 +1,6 @@
 #include "commands/SystemCommand.hpp"
 
-CommandRedo::CommandRedo(std::shared_ptr<ICommandsHistory>& command_history)
+CommandRedo::CommandRedo(std::shared_ptr<ICommandsHistory> command_history)
 :   SystemCommandBase{}
 ,   _history{command_history}
 {
@@ -16,7 +16,7 @@ void CommandRedo::undo() {
 }
 
 
-CommandUndo::CommandUndo(std::shared_ptr<ICommandsHistory>& command_history)
+CommandUndo::CommandUndo(std::shared_ptr<ICommandsHistory> command_history)
 :   SystemCommandBase{}
 ,   _history{command_history}
 {

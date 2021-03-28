@@ -17,7 +17,7 @@ protected:
     std::shared_ptr<ICommandsHistory> _history;
 
 public:
-    CommandRedo(std::shared_ptr<ICommandsHistory>& command_history);
+    CommandRedo(std::shared_ptr<ICommandsHistory> command_history);
     virtual ~CommandRedo() = default;
     virtual void execute() override;
     virtual void undo() override;
@@ -28,7 +28,7 @@ protected:
     std::shared_ptr<ICommandsHistory> _history;
 
 public:
-    CommandUndo(std::shared_ptr<ICommandsHistory>& command_history);
+    CommandUndo(std::shared_ptr<ICommandsHistory> command_history);
     virtual ~CommandUndo() = default;
     virtual void execute() override;
     virtual void undo() override;

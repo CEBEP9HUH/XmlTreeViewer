@@ -1,9 +1,10 @@
 #include "ui/Tree.hpp"
 
 #include "imgui.h"
-
 #include "commands/TreeCommand.hpp"
 #include "commands/SystemCommand.hpp"
+
+#include <cstring>
 
 Tree::Tree(const float x, const float y, const float w, const float h, std::string_view caption)
 :   UIElementBase{x, y, w, h, caption}

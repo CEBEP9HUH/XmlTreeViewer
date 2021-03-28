@@ -71,6 +71,6 @@ public:
     void addToolbarElement(std::string_view toolbar_name, UIElementBase* element, bool new_line = false);
     // Method for ui element creation helping. Has concrete overloading for ui element creation
     template<ElementType, typename...Args>
-    UIElementBase* make_element(std::string_view caption, IObserver* handler, Args...args);
+    UIElementBase* make_element(std::string_view caption, std::shared_ptr<IObserver> handler, Args...args);
 
 };

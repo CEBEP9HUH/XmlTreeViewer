@@ -9,12 +9,13 @@ set(libs ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 find_package(pugixml REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(Threads REQUIRED)
 
 add_executable(${PROJECT_NAME} 
 ${src}/main.cpp
 ${src}/Controller.cpp
 ${src}/Model.cpp
-${src}/ui/ui.cpp
+${src}/ui/UI.cpp
 ${src}/ui/Button.cpp
 ${src}/ui/Tree.cpp
 ${src}/ui/Toolbar.cpp
@@ -40,6 +41,7 @@ ${OPENGL_INCLUDE_DIR}
 )
 
 target_link_libraries(${PROJECT_NAME}  PRIVATE 
+    Threads::Threads
     pugixml
     SDL2::SDL2 
     ${OPENGL_LIBRARIES}

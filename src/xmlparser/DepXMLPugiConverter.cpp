@@ -1,5 +1,6 @@
 #include "xmlparser/DepXMLPugiConverter.hpp"
 #include <array>
+#include <cstring>
 
 constexpr const size_t LOAD_FILE_DEFAULT_OPTIONS = 116;
 const DepXMLPugiConverter::structure_t
@@ -12,7 +13,7 @@ DepXMLPugiConverter::_department_xml_structure = {{{"departments", DepXMLPugiCon
 tnode - tree node - Node
 pnode - pugi node - xml node
 */
-void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node& pnode, size_t depth) {
+void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node pnode, size_t depth) {
     for (pugi::xml_node& n: pnode.children()) {
         if(std::strlen(n.name())==0) {
             continue;

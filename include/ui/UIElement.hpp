@@ -22,7 +22,7 @@ protected:
         float width;
         float height;
     } _shapeRect;
-    std::set<IObserver*> _observers;
+    std::set<std::shared_ptr<IObserver> > _observers;
     std::string _caption;
     bool _strong_placement;
 
@@ -32,11 +32,11 @@ protected:
         }
     }
 
-    virtual void attach(IObserver* observer) override {
+    virtual void attach(std::shared_ptr<IObserver>observer) override {
         _observers.insert(observer);
     }
 
-    virtual void detach(IObserver* observer) override {
+    virtual void detach(std::shared_ptr<IObserver> observer) override {
         _observers.erase(observer);
     }
 
@@ -59,12 +59,12 @@ public:
         _shapeRect.height = h; 
     }
 
-    UIElementBase* attach_to(IObserver* observer) {
+    UIElementBase* attach_to(std::shared_ptr<IObserver> observer) {
         attach(observer);
         return this;
     }
 
-    UIElementBase* detach_from(IObserver* observer) {
+    UIElementBase* detach_from(std::shared_ptr<IObserver> observer) {
         detach(observer);
         return this;
     }
