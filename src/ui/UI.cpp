@@ -49,7 +49,7 @@ int UI::init() {
     ImGui::CreateContext();
     io = ImGui::GetIO(); (void)io;
     ImGui::StyleColorsDark();
-    // io.Fonts->AddFontFromFileTTF("..\\assets\\Arial.ttf", 14, NULL, io.Fonts->GetGlyphRangesCyrillic());
+    io.Fonts->AddFontFromFileTTF("..\\assets\\Arial.ttf", 14, NULL, io.Fonts->GetGlyphRangesCyrillic());
     ImGui_ImplSDL2_InitForOpenGL(window, gl_context);
     ImGui_ImplOpenGL2_Init();
     clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
