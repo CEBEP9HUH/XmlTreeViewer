@@ -1,7 +1,5 @@
 #include "Model.hpp"
-#include "DepXMLPugiConverter.hpp"
-#include <iostream>
-
+#include "xmlparser/DepXMLPugiConverter.hpp"
 
 Model::Model()
 :   _root{new Node()}
@@ -9,6 +7,7 @@ Model::Model()
 {
     DepXMLPugiConverter converter;
     _root->setValue("Root");
+    //works only with this location and filename
     converter.load(_root, "../data/tsl.xml");
 }
 
@@ -40,5 +39,6 @@ void Model::exit() {
 
 Model::~Model() {
     DepXMLPugiConverter converter;
+    //works only with this location and filename
     converter.save(_root, "../data/output.xml");
 }

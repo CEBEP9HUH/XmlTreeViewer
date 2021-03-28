@@ -1,4 +1,4 @@
-#include "DepXMLPugiConverter.hpp"
+#include "xmlparser/DepXMLPugiConverter.hpp"
 #include <array>
 
 constexpr const size_t LOAD_FILE_DEFAULT_OPTIONS = 116;
@@ -8,12 +8,17 @@ DepXMLPugiConverter::_department_xml_structure = {{{"departments", DepXMLPugiCon
                                                 {"employments", DepXMLPugiConverter::NodeType::CONTAINER_NODE}, 
                                                 {"employment", DepXMLPugiConverter::NodeType::VIEW_NODE}}};
 
+/*
+tnode - tree node - Node
+pnode - pugi node - xml node
+*/
 void DepXMLPugiConverter::_parse(std::shared_ptr<Node>& tnode, pugi::xml_node& pnode, size_t depth) {
     for (pugi::xml_node& n: pnode.children()) {
         if(std::strlen(n.name())==0) {
             continue;
         }
         std::shared_ptr<Node> cur;
+        //containers removing from structure or view creation
         if(depth < _department_xml_structure_depth) {
             switch(_department_xml_structure[depth].second) {
                 case DepXMLPugiConverter::NodeType::CONTAINER_NODE: {
@@ -55,6 +60,7 @@ bool DepXMLPugiConverter::load(std::shared_ptr<Node>& root, std::string_view fil
 }
 
 void DepXMLPugiConverter::_convert(std::shared_ptr<Node>& tnode, pugi::xml_node pnode, size_t depth) {
+    //add containers which are necessery in department structure
     if(depth < _department_xml_structure_depth) {
         if(_department_xml_structure[depth].second == DepXMLPugiConverter::NodeType::CONTAINER_NODE) {
             pnode = pnode.append_child(_department_xml_structure[depth].first.c_str());

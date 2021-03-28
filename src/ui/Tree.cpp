@@ -2,7 +2,8 @@
 
 #include "imgui.h"
 
-#include "Command.hpp"
+#include "commands/TreeCommand.hpp"
+#include "commands/SystemCommand.hpp"
 
 Tree::Tree(const float x, const float y, const float w, const float h, std::string_view caption)
 :   UIElementBase{x, y, w, h, caption}
@@ -27,7 +28,7 @@ void Tree::_draw_add_button(const int id) {
         auto new_node = std::make_shared<Node>();
         new_node->setValue(_new_node._value);
         new_node->setTag(_new_node._role);
-        ICommand* cmd = new DepartmentCommandAppend(_cur_draw_pos, new_node);
+        ICommand* cmd = new TreeCommandAdd(_cur_draw_pos, new_node);
         _command.reset(cmd);
     }
 }
@@ -38,7 +39,7 @@ void Tree::_draw_delete_button(const int id) {
         auto delete_button_name = "Delete##" + std::to_string(id);
         if(ImGui::Button(delete_button_name.c_str())) {
             if(parent) {
-                ICommand* cmd = new DepartmentCommandRemove(_cur_draw_pos);
+                ICommand* cmd = new TreeCommandRemove(_cur_draw_pos);
                 _command.reset(cmd);
             }
         }
@@ -48,7 +49,7 @@ void Tree::_draw_delete_button(const int id) {
 void Tree::_draw_edit_button(const int id) {
     auto edit_button_name = "Edit##" + std::to_string(id);
     if(ImGui::Button(edit_button_name.c_str())) {
-        ICommand* cmd = new DepartmentCommandEdit(_cur_draw_pos, _new_node._value);
+        ICommand* cmd = new TreeCommandEdit(_cur_draw_pos, _new_node._value);
         _command.reset(cmd);
     }
 }

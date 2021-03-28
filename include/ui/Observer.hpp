@@ -1,3 +1,6 @@
+/*
+observer-publisher pattern
+*/
 #pragma once
 #include <any>
 

@@ -1,5 +1,9 @@
+/*
+UIElementBase - base class for all ui elements
+*/
 #pragma once
 #include "Observer.hpp"
+
 #include <string>
 #include <set>
 #include <any>
@@ -19,8 +23,8 @@ protected:
         float height;
     } _shapeRect;
     std::set<IObserver*> _observers;
-    bool _strong_placement;
     std::string _caption;
+    bool _strong_placement;
 
     virtual void notify(const std::any& parameter) override {
         for(const auto o: _observers) {

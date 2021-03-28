@@ -1,8 +1,9 @@
+/*
+Tree UI element. Used for xml-tree showing
+*/
 #pragma once
-
 #include "UIElement.hpp"
-#include "Command.hpp"
-
+#include "commands/Command.hpp"
 #include "TreeContainer.hpp"
 
 class Tree: public UIElementBase {
@@ -19,6 +20,7 @@ protected:
     void _draw_delete_button(const int id);
     void _draw_edit_button(const int id);
     void _draw_node_button(const int id);
+    
 public:
     Tree() = delete;
     Tree(const float x, const float y, const float w, const float h, std::string_view caption);

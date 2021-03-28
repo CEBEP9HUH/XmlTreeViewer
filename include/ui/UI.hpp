@@ -1,11 +1,10 @@
+/*
+UIElementEventHandler - helper class. Provides convertion from std::any to stored type. 
+Used for commands passing from ui elements to model. Uses callback function to pass the command.
+UI - is a main UI class. Stores all ui elements has to be shown, inits imgui for drawing, 
+draws all elements in main loop
+*/
 #pragma once
-
-#include <list>
-#include <map>
-#include <memory>
-#include <SDL.h>
-#include <SDL_opengl.h>
-#include <functional>
 
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
@@ -14,6 +13,12 @@
 #include "UIElement.hpp"
 #include "Toolbar.hpp"
 #include "Observer.hpp"
+
+#include <map>
+#include <memory>
+#include <functional>
+#include <SDL.h>
+#include <SDL_opengl.h>
 
 class IUIElementEventHandler: public IObserver {
 public:
@@ -43,6 +48,15 @@ public:
 
 
 class UI {
+protected:
+    SDL_Window* window;
+    SDL_WindowFlags window_flags;
+    SDL_GLContext gl_context;
+    ImGuiIO io;
+    ImVec4 clear_color;
+    std::map<std::string_view, Toolbar> bars;
+    std::pair<int, int> window_size;
+
 public:
     enum class ElementType {
         Button,
@@ -54,20 +68,9 @@ public:
     int init();
     void run();
     void deinit();
-
     void addToolbarElement(std::string_view toolbar_name, UIElementBase* element, bool new_line = false);
-
+    // Method for ui element creation helping. Has concrete overloading for ui element creation
     template<ElementType, typename...Args>
     UIElementBase* make_element(std::string_view caption, IObserver* handler, Args...args);
 
-protected:
-    SDL_Window* window;
-    SDL_WindowFlags window_flags;
-    SDL_GLContext gl_context;
-    ImGuiIO io;
-    ImVec4 clear_color;
-
-    std::map<std::string_view, Toolbar> bars;
-    std::pair<int, int> window_size;
-    constexpr static const float bottom_toolbar_height = 20.f;
 };

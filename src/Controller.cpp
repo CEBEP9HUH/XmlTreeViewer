@@ -1,6 +1,7 @@
 #include "Controller.hpp"
 #include "Model.hpp"
-#include "Command.hpp"
+#include "commands/SystemCommand.hpp"
+#include "commands/TreeCommand.hpp"
 #include "ui/Tree.hpp"
 
 #include <functional>
@@ -10,23 +11,25 @@ Controller::Controller()
 :   _ui{new UI(500, 500)}
 ,   _model{new Model()}
 {
+    
+    auto cmd_handler_no_history = new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false));
     std::shared_ptr<ICommand> undo(new CommandUndo(_model->getCommandHistory()));
     _ui->addToolbarElement("tree", 
         _ui->make_element<UI::ElementType::Button>("Undo", 
-            new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false)), 
+            cmd_handler_no_history, 
             undo));
 
     std::shared_ptr<ICommand> redo(new CommandRedo(_model->getCommandHistory()));
     _ui->addToolbarElement("tree", 
                 _ui->make_element<UI::ElementType::Button>("Redo", 
-                new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, false)), 
+                cmd_handler_no_history, 
                 redo));
 
     auto tree = _ui->make_element<UI::ElementType::Tree>("tree_view", 
             new UIElementEventHandler<std::shared_ptr<ICommand>>(std::bind(&Model::addCommand, _model.get(), std::placeholders::_1, true)));
 
     reinterpret_cast<Tree*>(tree)->setData(_model->getDepartment());
-    tree->setSize(100,500);
+    // tree->setSize(100,500);
     _ui->addToolbarElement("tree", tree, true);
 }
 

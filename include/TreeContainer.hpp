@@ -1,3 +1,8 @@
+/*
+Node is a node for inner application xml tree. Uses as xml container 
+which is not depended from concrete xml library
+ViewNode is a node which value is always equals to a sum of several childs values
+*/
 #pragma once
 
 #include <map>

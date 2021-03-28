@@ -1,3 +1,6 @@
+/*
+DepXMLPugiConverter - department xml-converter. Uses pugi.
+*/
 #pragma once 
 
 #include "XMLParser.hpp"
@@ -14,8 +17,9 @@ protected:
     constexpr static const size_t _department_xml_structure_depth = 4;
     using structure_t = std::array<std::pair<std::string, NodeType>, _department_xml_structure_depth>;
     static const structure_t _department_xml_structure;
-    void _parse(std::shared_ptr<Node>& root, pugi::xml_node& node, size_t depth);
+    void _parse(std::shared_ptr<Node>& tnode, pugi::xml_node& pnode, size_t depth);
     void _convert(std::shared_ptr<Node>& tnode, pugi::xml_node pnode, size_t depth);
+    
 public:
     DepXMLPugiConverter() = default;
     virtual ~DepXMLPugiConverter() = default;

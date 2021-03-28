@@ -1,3 +1,6 @@
+/*
+Model part of MVC pattern.
+*/
 #pragma once
 
 #include <inttypes.h>
@@ -5,9 +8,9 @@
 #include <mutex>
 #include <atomic>
 
-#include "Command.hpp"
+#include "commands/Command.hpp"
+#include "commands/CommandHistory.hpp"
 #include "TreeContainer.hpp"
-#include "CommandHistory.hpp"
 
 class Model{
 protected:
@@ -16,10 +19,10 @@ protected:
     std::list<std::pair<std::shared_ptr<ICommand>, bool> > _command_buffer;
     std::mutex _command_buffer_mutex;
     std::atomic<bool> _close = false;
+
 public:
     Model();
     virtual ~Model();
-
     void run();
     void exit();
     void addCommand(std::shared_ptr<ICommand> cmd, bool store_in_history = false);
